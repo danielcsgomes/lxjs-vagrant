@@ -19,11 +19,11 @@ Vagrant.configure("2") do |config|
     # Virtual Box Custom configurations
     config.vm.provider :virtualbox do |vb|
         vb.customize [
-            "modifyvm", :id
-            ,'--chipset', 'ich9'
-            ,'--natdnsproxy1', 'on'
-            ,'--natdnshostresolver1', 'on'
-            ,'--memory', '1024'
+            'modifyv', :id,
+            '--chipset', 'ich9',
+            '--natdnsproxy1', 'on',
+            '--natdnshostresolver1', 'on',
+            '--memory', '1024'
         ]
     end
 
