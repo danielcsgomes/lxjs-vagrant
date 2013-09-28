@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     # Virtual Box Custom configurations
     config.vm.provider :virtualbox do |vb|
         vb.customize [
-            'modifyv', :id,
+            'modifyvm', :id,
             '--chipset', 'ich9',
             '--natdnsproxy1', 'on',
             '--natdnshostresolver1', 'on',
@@ -53,11 +53,14 @@ Vagrant.configure("2") do |config|
         pkg_cmd <<  "sudo ln -s /usr/local/etc/logrotate.d/couchdb /etc/logrotate.d/couchdb;sudo ln -s /usr/local/etc/init.d/couchdb  /etc/init.d;sudo update-rc.d couchdb defaults;"
         pkg_cmd <<  "sudo chown -R couchdb:couchdb /usr/local/var/log/couchdb;sudo chown -R couchdb:couchdb /usr/local/var/lib/couchdb;sudo chown -R couchdb:couchdb /usr/local/var/run/couchdb;"
         pkg_cmd <<  "sudo /bin/sed -i -e 's/'127.0.0.1'\\b/'0.0.0.0'/g' /usr/local/etc/couchdb/default.ini;sudo service couchdb restart;"
+        
+        # Add lxjs.dev to hosts file
+        pkg_cmd <<  "sudo echo \"127.0.0.1 lxjs.dev\" >> /etc/hosts"
 
         if ENV["VAGRANT_DEFAULT_PROVIDER"].nil? && ARGV.none? { |arg| arg.downcase.start_with?("--provider") }
          pkg_cmd << "apt-get install -q -y linux-headers-generic-lts-raring dkms; " \
            "echo 'Downloading VBox Guest Additions...'; " \
-           "wget -q http://dlc.sun.com.edgesuite.net/virtualbox/4.2.12/VBoxGuestAdditions_4.2.12.iso; "
+           "wget http://dlc.sun.com.edgesuite.net/virtualbox/4.2.12/VBoxGuestAdditions_4.2.12.iso; "
          # Prepare the VM to add guest additions after reboot
          pkg_cmd << "echo -e 'mount -o loop,ro /home/vagrant/VBoxGuestAdditions_4.2.12.iso /mnt\n" \
            "echo yes | /mnt/VBoxLinuxAdditions.run\numount /mnt\n" \
